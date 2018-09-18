@@ -24,21 +24,20 @@ MongoClient.connect(
     //   }
     // );
 
+    const db = client.db("TodoApp");
 
-    // const db = client.db("TodoApp");
+    db.collection("Users").insertOne(
+      {
+        name: "Jane Doe",
+        age: 41,
+        location: "London"
+      },
+      (err, result) => {
+        if (err) console.log("Unable to insert record:", err);
 
-    // db.collection("Users").insertOne(
-    //   {
-    //     name: "Jane Doe",
-    //     age: 41,
-    //     location: "London"
-    //   },
-    //   (err, result) => {
-    //     if (err) console.log("Unable to insert record:", err);
-
-    //     console.log(JSON.stringify(result.ops[0]._id.getTimestamp(), undefined, 2));
-    //   }
-    // );
+        console.log(JSON.stringify(result.ops[0]._id.getTimestamp(), undefined, 2));
+      }
+    );
 
     client.close();
   }

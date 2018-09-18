@@ -17,9 +17,11 @@ MongoClient.connect(
     //   console.log(result);
     // })
 
-    db.collection("Users").deleteMany({_id:ObjectID("5b9e5b65601e782a74571d14")}).then((res) => {
-      console.log(res);
-    })
+    db.collection("Users")
+      .deleteMany({ _id: ObjectID("5b9e5b65601e782a74571d14") })
+      .then(res => {
+        console.log(res);
+      });
 
     client.close();
   }

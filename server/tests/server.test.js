@@ -12,7 +12,9 @@ const todos = [
   },
   {
     _id: new ObjectID(),
-    text: "Second"
+    text: "Second",
+    completed: true,
+    completedAt: new Date().getTime()
   }
 ];
 
@@ -109,7 +111,7 @@ describe("GET /todos/:id", () => {
 describe("DELETE /todos/:id", () => {
   it("should delete a todo", done => {
     const testID = todos[0]._id.toHexString();
-    
+
     request(app)
       .delete(`/todos/${testID}`)
       .expect(200)
@@ -141,6 +143,44 @@ describe("DELETE /todos/:id", () => {
     request(app)
       .delete(`/todos/123`)
       .expect(404)
+      .end(done);
+  });
+});
+
+describe("PATCH /todos/:id", () => {
+  it("should update the todo", done => {
+    const text = "New text";
+    const id = todos[0]._id;
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({ text, completed: true })
+      .expect(200)
+      .expect(res => {
+        const todo = res.body.todo;
+
+        expect(todo.text).toEqual(text);
+        expect(todo.completed).toEqual(true);
+        expect(typeof todo.completedAt).toEqual("number");
+      })
+      .end(done);
+  });
+
+  it("should clear completedAt when todo is not completed", done => {
+    const text = "New text";
+    const id = todos[1]._id;
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({ text, completed: false })
+      .expect(200)
+      .expect(res => {
+        const todo = res.body.todo;
+
+        expect(todo.text).toEqual(text);
+        expect(todo.completed).toEqual(false);
+        expect(todo.completedAt).toEqual(null);
+      })
       .end(done);
   });
 });

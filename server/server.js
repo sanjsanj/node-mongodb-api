@@ -92,7 +92,17 @@ app.patch("/todos/:id", (req, res) => {
 
       res.status(200).send({ todo });
     })
-    .catch(e => res.status(400).send())
+    .catch(e => res.status(400).send());
+});
+
+app.post("/users", (req, res) => {
+  const body = _.pick(req.body, ["email", "password"]);
+  const user = new User(body);
+
+  user
+    .save()
+    .then(user => res.send(user))
+    .catch(e => res.status(400).send(e));
 });
 
 app.listen(port, () => {

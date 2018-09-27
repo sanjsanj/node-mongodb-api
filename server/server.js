@@ -21,7 +21,7 @@ app.post("/todos", (req, res) => {
 
   todo
     .save()
-    .then(doc => res.send(doc))
+    .then(res.send)
     .catch(e => res.status(400).send(e));
 });
 
@@ -101,7 +101,8 @@ app.post("/users", (req, res) => {
 
   user
     .save()
-    .then(user => res.send(user))
+    .then(() => user.generateAuthToken())
+    .then(token => res.header("x-auth", token).send(user))
     .catch(e => res.status(400).send(e));
 });
 

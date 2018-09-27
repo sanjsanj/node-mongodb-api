@@ -22,7 +22,7 @@ app.post("/todos", (req, res) => {
 
   todo
     .save()
-    .then(res.send)
+    .then(() => res.send())
     .catch(e => res.status(400).send(e));
 });
 
@@ -104,12 +104,12 @@ app.post("/users", (req, res) => {
     .save()
     .then(() => user.generateAuthToken(user))
     .then(token => res.header("x-auth", token).send(user))
-    .catch(e => res.status(400).send(e));
+    .catch(e => res.status(400).send());
 });
 
 app.get("/users/me", authenticate, (req, res) => {
   res.send(req.user);
-})
+});
 
 app.listen(port, () => {
   console.log(`Started on port ${port}`);

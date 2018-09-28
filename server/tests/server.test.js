@@ -212,10 +212,12 @@ describe("POST /users", () => {
       .end(err => {
         if (err) return done(err);
 
-        User.findOne({ email }).then(user => {
-          expect(user).not.toBeNull();
-          done();
-        });
+        User.findOne({ email })
+          .then(user => {
+            expect(user).not.toBeNull();
+            done();
+          })
+          .catch(e => done(e));
       });
   });
 
@@ -242,26 +244,42 @@ describe("POST /users", () => {
 });
 
 describe("POST /users/login", () => {
-  it("should login user", done => {
-    const email = "bb@bb.com";
-    const password = "123asdf!";
-
+  it("should login user and return auth token", done => {
     request(app)
-      .post("/users")
-      .send({ email, password })
+      .post("/users/login")
+      .send({
+        email: users[1].email,
+        password: users[1].password
+      })
       .expect(200)
       .expect(res => {
         expect(res.headers["x-auth"]).not.toBeNull();
-        expect(res.body._id).not.toBeNull();
-        expect(res.body.email).toEqual(email);
       })
-      .end(err => {
+      .end((err, res) => {
         if (err) return done(err);
 
-        User.findOne({ email }).then(user => {
-          expect(user).not.toBeNull();
-          done();
-        });
+        User.findById(users[1]._id)
+          .then(user => {
+            expect(user.tokens[0]).toEqual(
+              expect.objectContaining({
+                access: "auth",
+                token: res.headers["x-auth"]
+              })
+            );
+            done();
+          })
+          .catch(e => done(e));
       });
+  });
+
+  it("should reject invalid login", done => {
+    request(app)
+      .post("/users/login")
+      .send({
+        email: users[1].email,
+        password: ""
+      })
+      .expect(400)
+      .end(done);
   });
 });

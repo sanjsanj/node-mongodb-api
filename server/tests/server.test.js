@@ -240,3 +240,28 @@ describe("POST /users", () => {
       .end(done);
   });
 });
+
+describe("POST /users/login", () => {
+  it("should login user", done => {
+    const email = "bb@bb.com";
+    const password = "123asdf!";
+
+    request(app)
+      .post("/users")
+      .send({ email, password })
+      .expect(200)
+      .expect(res => {
+        expect(res.headers["x-auth"]).not.toBeNull();
+        expect(res.body._id).not.toBeNull();
+        expect(res.body.email).toEqual(email);
+      })
+      .end(err => {
+        if (err) return done(err);
+
+        User.findOne({ email }).then(user => {
+          expect(user).not.toBeNull();
+          done();
+        });
+      });
+  });
+});

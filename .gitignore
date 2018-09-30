@@ -61,3 +61,4 @@ typings/
 .next
 
 # custom
+server/config/config.json

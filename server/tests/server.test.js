@@ -163,7 +163,7 @@ describe("DELETE /todos/:id", () => {
 
         Todo.findById(testID)
           .then(todo => {
-            expect(todo).not.toEqual(null);
+            expect(todo).toBeTruthy();
             done();
           })
           .catch(e => done(e));
@@ -257,8 +257,8 @@ describe("POST /users", () => {
       .send({ email, password })
       .expect(200)
       .expect(res => {
-        expect(res.headers["x-auth"]).not.toBeNull();
-        expect(res.body._id).not.toBeNull();
+        expect(res.headers["x-auth"]).toBeTruthy();
+        expect(res.body._id).toBeTruthy();
         expect(res.body.email).toEqual(email);
       })
       .end(err => {
@@ -266,7 +266,7 @@ describe("POST /users", () => {
 
         User.findOne({ email })
           .then(user => {
-            expect(user).not.toBeNull();
+            expect(user).toBeTruthy();
             done();
           })
           .catch(e => done(e));
@@ -305,7 +305,7 @@ describe("POST /users/login", () => {
       })
       .expect(200)
       .expect(res => {
-        expect(res.headers["x-auth"]).not.toBeNull();
+        expect(res.headers["x-auth"]).toBeTruthy();
       })
       .end((err, res) => {
         if (err) return done(err);
